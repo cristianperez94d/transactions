@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
+use App\Actions\Fortify\MyLoginUser;
 use App\Actions\Jetstream\DeleteUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
@@ -23,8 +25,20 @@ class JetstreamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Request $request)
     {
+        if(
+            $request->getPathInfo() === "/login" 
+            && $request->isMethod('post')  
+            && $request->has('identification')
+            && $request->has('password')
+        ) {
+            $user = MyLoginUser::validIdentification($request->all());
+            if($user){
+                $request->request->add(['email' => $user->email ]);
+            }
+        }
+
         $this->configurePermissions();
 
         Jetstream::deleteUsersUsing(DeleteUser::class);

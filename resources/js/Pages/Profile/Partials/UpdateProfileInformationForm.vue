@@ -17,6 +17,7 @@ const props = defineProps({
 const form = useForm({
     _method: 'PUT',
     name: props.user.name,
+    identification: props.user.identification,
     email: props.user.email,
     photo: null,
 });
@@ -79,11 +80,11 @@ const clearPhotoFileInput = () => {
 <template>
     <JetFormSection @submitted="updateProfileInformation">
         <template #title>
-            Profile Information
+            Información del perfil
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            Actualice la información del perfil de su cuenta y la dirección de correo electrónico.
         </template>
 
         <template #form>
@@ -130,7 +131,7 @@ const clearPhotoFileInput = () => {
 
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
-                <JetLabel for="name" value="Name" />
+                <JetLabel for="name" value="Nombre" />
                 <JetInput
                     id="name"
                     v-model="form.name"
@@ -139,6 +140,19 @@ const clearPhotoFileInput = () => {
                     autocomplete="name"
                 />
                 <JetInputError :message="form.errors.name" class="mt-2" />
+            </div>
+            
+            <!-- Identification -->
+            <div class="col-span-6 sm:col-span-4">
+                <JetLabel for="ident" value="Identificación" />
+                <JetInput
+                    id="ident"
+                    v-model="form.identification"
+                    type="number"
+                    class="mt-1 block w-full"
+                    autocomplete="ident"
+                />
+                <JetInputError :message="form.errors.identification" class="mt-2" />
             </div>
 
             <!-- Email -->
@@ -176,11 +190,11 @@ const clearPhotoFileInput = () => {
 
         <template #actions>
             <JetActionMessage :on="form.recentlySuccessful" class="mr-3">
-                Saved.
+                Guardado.
             </JetActionMessage>
 
             <JetButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Guardar
             </JetButton>
         </template>
     </JetFormSection>

@@ -6,6 +6,7 @@
 
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting_started)
+- [Manual of User](#manual_user)
 
 ## 🤓 Prerequisites <a name = "prerequisites"></a>
 
@@ -32,7 +33,7 @@
 
 - Execute migrations with example data
     ```
-    php artisan migrate --seed
+    php artisan migrate:fresh --seed
     ```
 
 - Execute 
@@ -44,3 +45,16 @@
     ```
     php artisan serve
     ```
+
+## 📖 Manual of user
+
+- Datos de usuario administrador: 
+    - `identificacion` => `12345678`
+    - `contraseña` => `1234`
+
+- Restricciones: Solo el usuario administrador puede crear una nueva cuenta y asignarla a un usuario
+
+- El Usuario regular los puede consultar ingresando con el usuario administrador
+    - `contraseña` => `1234`
+
+- `NOTA` Para realizar transacciones ingresar con un uisuario diferente al administrador.

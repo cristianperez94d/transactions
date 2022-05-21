@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import { Head, Link, usePage } from '@inertiajs/inertia-vue3';
 import JetApplicationMark from '@/Jetstream/ApplicationMark.vue';
 import JetBanner from '@/Jetstream/Banner.vue';
 import JetDropdown from '@/Jetstream/Dropdown.vue';
@@ -26,14 +26,21 @@ const switchToTeam = (team) => {
 const logout = () => {
     Inertia.post(route('logout'));
 };
+
+const getToken = computed(() => {
+    const token = usePage().props.value.user.token;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    axios.defaults.headers.common["Accept"] = 'application/json';
+    return '';
+});
 </script>
 
 <template>
     <div>
+        {{ getToken }}
         <Head :title="title" />
 
         <JetBanner />
-
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
@@ -42,15 +49,21 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('inicio')">
                                     <JetApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <JetNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <JetNavLink :href="route('inicio')" :active="route().current('inicio')">
+                                    Inicio
+                                </JetNavLink>
+                                <JetNavLink v-if="$page.props.user.type != 'admin'" :href="route('transactions')" :active="route().current('transactions')">
+                                    Transacciones bancarias
+                                </JetNavLink>
+                                <JetNavLink v-if="$page.props.user.type == 'admin'" :href="route('users')" :active="route().current('account')">
+                                    Cuentas de usuarios
                                 </JetNavLink>
                             </div>
                         </div>
@@ -152,11 +165,11 @@ const logout = () => {
                                     <template #content>
                                         <!-- Account Management -->
                                         <div class="block px-4 py-2 text-xs text-gray-400">
-                                            Manage Account
+                                            Administrar cuenta
                                         </div>
 
                                         <JetDropdownLink :href="route('profile.show')">
-                                            Profile
+                                            Perfil
                                         </JetDropdownLink>
 
                                         <JetDropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')">
@@ -168,7 +181,7 @@ const logout = () => {
                                         <!-- Authentication -->
                                         <form @submit.prevent="logout">
                                             <JetDropdownLink as="button">
-                                                Log Out
+                                                Salir
                                             </JetDropdownLink>
                                         </form>
                                     </template>
@@ -208,8 +221,8 @@ const logout = () => {
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <JetResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                        <JetResponsiveNavLink :href="route('inicio')" :active="route().current('inicio')">
+                            Inicio
                         </JetResponsiveNavLink>
                     </div>
 
@@ -232,7 +245,7 @@ const logout = () => {
 
                         <div class="mt-3 space-y-1">
                             <JetResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
-                                Profile
+                                Perfil
                             </JetResponsiveNavLink>
 
                             <JetResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')" :active="route().current('api-tokens.index')">
@@ -242,7 +255,7 @@ const logout = () => {
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logout">
                                 <JetResponsiveNavLink as="button">
-                                    Log Out
+                                    Salir
                                 </JetResponsiveNavLink>
                             </form>
 

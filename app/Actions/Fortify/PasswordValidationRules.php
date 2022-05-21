@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\MyConfig\Globals;
 use Laravel\Fortify\Rules\Password;
 
 trait PasswordValidationRules
@@ -13,6 +14,10 @@ trait PasswordValidationRules
      */
     protected function passwordRules()
     {
-        return ['required', 'string', new Password, 'confirmed'];
+        return [
+            'required',
+            'regex:'.Globals::REGEX['password'],
+            'confirmed'
+        ];
     }
 }

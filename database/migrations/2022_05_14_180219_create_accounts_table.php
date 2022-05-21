@@ -16,6 +16,7 @@ class CreateAccountsTable extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('account');
             $table->unsignedBigInteger('current_value');
             $table->enum('type', Globals::ACCOUNT_TYPE);
             $table->enum('state', Globals::ACCOUNT_STATE)->nullable()->default('inactive');

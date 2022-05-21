@@ -1,8 +1,11 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
+use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +32,17 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/inicio', function () {
+        return Inertia::render('Inicio');
+    })->name('inicio');
+    Route::get('/transacciones-bancarias', function () {
+        return Inertia::render('Transactions');
+    })->name('transactions');
+    Route::get('/estado-cuenta', function () {
+        return Inertia::render('Account');
+    })->name('account');
+    Route::get('/usuarios', function () {
+        if(Auth::user()->type !== User::ADMIN) return redirect(route('inicio'));
+        else return Inertia::render('Users');
+    })->name('users');
 });

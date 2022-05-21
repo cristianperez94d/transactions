@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Account;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,7 +14,7 @@ class TransactionFactory extends Factory
      */
     public function definition()
     {
-        $user = User::all()->random();
+        $user = User::where('type', '!=', User::ADMIN)->get()->random();
         return [
             'origin_id' => $user->accounts->random()->id,
             'destiny_id' => $user->accounts->random()->id,

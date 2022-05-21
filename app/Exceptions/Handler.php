@@ -2,11 +2,18 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Inertia\Inertia;
+use App\MyConfig\Globals;
+use App\Traits\Api\ApiResponse;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
+    use ApiResponse;
     /**
      * A list of the exception types that are not reported.
      *
@@ -35,7 +42,55 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
+            // dd('excepcion',$e);
             //
         });
     }
+
+    /**
+     * Prepare exception for rendering.
+     *
+     * @param  \Throwable  $e
+     * @return \Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        $response = parent::render($request, $e);
+
+        if($e->getCode() === Globals::EXCEPCION_CODE['login']){
+            return Inertia::render('Auth/Login', ['status' => null, 'errors'=> [$e->getMessage()], 'canResetPassword' => true])
+                ->toResponse($request)
+                ->setStatusCode(200)
+            ;
+            
+        }
+
+        if($request->wantsJson()){
+
+            // Endpoint no encontrado
+            if($e instanceof NotFoundHttpException){
+                return $this->errorResponse(
+                    404,
+                    __('api.msgNotFoundHttpException')
+                );
+            }
+
+            // Recurso no encontrado
+            if($e instanceof ModelNotFoundException){
+                return $this->errorResponse(404, __('api.msgModelNotFoundException'));
+            }
+
+            // Errores de validacion
+            if($e instanceof ValidationException){
+                return $this->errorResponse(
+                    403,
+                    $e->validator->errors(),
+                );
+            }
+        }
+
+        return $response;
+    }
+
+    
 }

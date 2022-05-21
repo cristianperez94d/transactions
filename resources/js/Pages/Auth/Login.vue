@@ -14,7 +14,7 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
+    identification: '',
     password: '',
     remember: false,
 });
@@ -45,11 +45,11 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <JetLabel for="email" value="Email" />
+                <JetLabel for="ident" value="Identificación" />
                 <JetInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
+                    id="ident"
+                    v-model="form.identification"
+                    type="number"
                     class="mt-1 block w-full"
                     required
                     autofocus
@@ -57,7 +57,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <JetLabel for="password" value="Password" />
+                <JetLabel for="password" value="Contraseña" />
                 <JetInput
                     id="password"
                     v-model="form.password"
@@ -71,17 +71,17 @@ const submit = () => {
             <div class="block mt-4">
                 <label class="flex items-center">
                     <JetCheckbox v-model:checked="form.remember" name="remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    <span class="ml-2 text-sm text-gray-600">Recordar</span>
                 </label>
             </div>
 
             <div class="flex items-center justify-end mt-4">
                 <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
+                    ¿Olvidaste tu contraseña?
                 </Link>
 
                 <JetButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
+                    Iniciar sesión
                 </JetButton>
             </div>
         </form>
